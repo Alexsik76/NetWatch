@@ -1,8 +1,10 @@
+from pathlib import Path
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import declarative_base
 
-
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./netwatch.db"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+DB_FILE = PROJECT_ROOT / "backend" / "netwatch.db"
+SQLALCHEMY_DATABASE_URL = f"sqlite+aiosqlite:///{DB_FILE}"
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
 
