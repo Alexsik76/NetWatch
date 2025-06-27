@@ -80,17 +80,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await manager.connect(websocket)
 
-    # Якщо це перший клієнт і задача ще не запущена, запускаємо її
     if not monitoring_task or monitoring_task.done():
         monitoring_task = asyncio.create_task(monitor_devices())
 
     try:
-        # Тримаємо з'єднання відкритим, поки клієнт не відключиться
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-        # Якщо це був останній клієнт, зупиняємо фонову задачу
         if len(manager.active_connections) == 0 and monitoring_task:
             print("INFO:     Last client disconnected. Stopping monitoring task...")
             monitoring_task.cancel()
